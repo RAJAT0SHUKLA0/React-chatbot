@@ -23,7 +23,7 @@ export default function AIChat() {
     setLoading(true);
 
     try {
-      const response = await axios.post("https://ai-chatbot-backend-2-zhwh.onrender.com/api/ask-ai", {
+      const response = await axios.post("", {
         prompt,
       });
       const aiMsg = { role: "assistant", content: response.data.reply };
