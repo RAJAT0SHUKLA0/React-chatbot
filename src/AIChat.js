@@ -24,9 +24,10 @@ export default function AIChat() {
     setLoading(true);
 
     try {
-      const response = await axios.post("https://ai-chatbot-backend-2-zhwh.onrender.com/api/ask-ai", {
-        prompt,
-      });
+      const response = await axios.post(
+        "https://ai-chatbot-backend-2-zhwh.onrender.com/api/ask-ai",
+        { prompt }
+      );
       const aiMsg = { role: "assistant", content: response.data.reply };
       setMessages((prev) => [...prev, aiMsg]);
     } catch (error) {
@@ -40,55 +41,42 @@ export default function AIChat() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-[#0a0a0a] text-white font-[Poppins]">
-      {/* Background gradient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/40 via-slate-900 to-black" />
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/20 blur-3xl rounded-full animate-pulse" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-600/20 blur-3xl rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+    <div style={styles.container}>
+      {/* Background Effects */}
+      <div style={styles.bgGradient}></div>
+      <div style={styles.bgBlob1}></div>
+      <div style={styles.bgBlob2}></div>
 
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative w-full max-w-4xl h-[85vh] bg-white/10 backdrop-blur-2xl border border-white/20 
-                   rounded-3xl shadow-[0_0_50px_rgba(79,70,229,0.3)] flex flex-col overflow-hidden m-4"
+        style={styles.chatBox}
       >
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="py-6 px-6 bg-gradient-to-r from-indigo-600/30 via-purple-600/30 to-pink-600/20 border-b border-white/20"
-        >
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-2xl shadow-lg">
-              🤖
-            </div>
-            <div className="text-center">
-              <h1 className="text-3xl font-bold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-                
-              </h1>
-              <p className="text-sm text-gray-300 mt-0.5">Your Smart Assistant</p>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={styles.avatar}>🤖</div>
+            <div>
+              <h1 style={styles.title}>AI Chatbot</h1>
+              <p style={styles.subtitle}>Your Smart Assistant</p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Chat Window */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-transparent">
+        {/* Messages Area */}
+        <div style={styles.messagesArea}>
           {messages.length === 0 && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center justify-center h-full text-center space-y-4"
+              style={styles.emptyState}
             >
-              <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-5xl shadow-2xl">
-                💬
-              </div>
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-200">Start a Conversation</h2>
-                <p className="text-gray-400 mt-2 max-w-md">
-                  Ask me anything! I'm here to help with questions, ideas, or just a friendly chat.
-                </p>
-              </div>
+              <div style={styles.emptyIcon}>💬</div>
+              <h2 style={styles.emptyTitle}>Start a Conversation</h2>
+              <p style={styles.emptyText}>
+                Ask me anything! I'm here to help with questions, ideas, or just
+                a friendly chat.
+              </p>
             </motion.div>
           )}
 
@@ -97,55 +85,51 @@ export default function AIChat() {
               key={i}
               initial={{ opacity: 0, x: msg.role === "user" ? 50 : -50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
-              className={`flex items-start gap-3 ${
-                msg.role === "user" ? "justify-end" : "justify-start"
-              }`}
+              transition={{ duration: 0.4 }}
+              style={{
+                ...styles.messageRow,
+                justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+              }}
             >
-              {/* Assistant Avatar */}
               {msg.role === "assistant" && (
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-xl shadow-lg flex-shrink-0">
-                  🤖
-                </div>
+                <div style={styles.botAvatar}>🤖</div>
               )}
 
-              {/* Message Bubble */}
               <div
-                className={`max-w-[75%] px-5 py-3.5 rounded-2xl leading-relaxed shadow-lg transition-all hover:shadow-xl ${
-                  msg.role === "user"
-                    ? "bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white rounded-tr-none"
-                    : "bg-white/95 text-gray-900 rounded-tl-none border border-gray-200"
-                }`}
+                style={{
+                  ...styles.messageBubble,
+                  ...(msg.role === "user"
+                    ? styles.userBubble
+                    : styles.botBubble),
+                }}
               >
-                <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                {msg.content}
               </div>
 
-              {/* User Avatar */}
-              {msg.role === "user" && (
-                <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-800 rounded-full flex items-center justify-center text-xl shadow-lg flex-shrink-0">
-                  👤
-                </div>
-              )}
+              {msg.role === "user" && <div style={styles.userAvatar}>👤</div>}
             </motion.div>
           ))}
 
-          {/* Typing indicator */}
           {loading && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              style={styles.messageRow}
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-xl shadow-lg">
-                🤖
-              </div>
-              <div className="bg-white/95 px-5 py-3.5 rounded-2xl rounded-tl-none shadow-lg flex items-center gap-2">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              <div style={styles.botAvatar}>🤖</div>
+              <div style={styles.typingBubble}>
+                <div style={styles.typingDots}>
+                  <span style={{ ...styles.dot, animationDelay: "0ms" }}>
+                    •
+                  </span>
+                  <span style={{ ...styles.dot, animationDelay: "150ms" }}>
+                    •
+                  </span>
+                  <span style={{ ...styles.dot, animationDelay: "300ms" }}>
+                    •
+                  </span>
                 </div>
-                <span className="text-gray-600 text-sm ml-2">AI is thinking...</span>
+                <span style={styles.typingText}>AI is thinking...</span>
               </div>
             </motion.div>
           )}
@@ -153,14 +137,11 @@ export default function AIChat() {
           <div ref={chatEndRef}></div>
         </div>
 
-        {/* Input area */}
-        <div className="relative flex items-end gap-3 p-6 bg-[#0f172a]/80 backdrop-blur-lg border-t border-white/10">
+        {/* Input Area */}
+        <div style={styles.inputArea}>
           <textarea
-            className="flex-1 bg-[#1e293b]/80 text-white placeholder-gray-400 rounded-2xl 
-                       px-5 py-4 resize-none border border-gray-600/50 focus:ring-2 
-                       focus:ring-indigo-500 focus:outline-none focus:border-indigo-500/50 
-                       transition-all shadow-inner text-base min-h-[60px] max-h-[120px]"
-            rows="1"
+            style={styles.textarea}
+            rows="2"
             placeholder="Type your message here..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -176,25 +157,7 @@ export default function AIChat() {
             endIcon={<SendIcon />}
             onClick={handleSend}
             disabled={isSendDisabled}
-            title={isSendDisabled ? "Type a message or wait..." : "Send message"}
-            sx={{
-              borderRadius: 4,
-              px: 4,
-              py: 1.5,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              textTransform: 'none',
-              fontSize: '1rem',
-              fontWeight: 600,
-              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #5568d3 0%, #63408a 100%)',
-                boxShadow: '0 6px 20px rgba(102, 126, 234, 0.6)',
-              },
-              '&:disabled': {
-                background: 'linear-gradient(135deg, #4a5568 0%, #2d3748 100%)',
-                color: '#718096',
-              }
-            }}
+            sx={buttonStyles}
           >
             {loading ? "Sending..." : "Send"}
           </Button>
@@ -203,3 +166,250 @@ export default function AIChat() {
     </div>
   );
 }
+
+// Styles Object
+const styles = {
+  container: {
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#0a0a0a",
+    position: "relative",
+    overflow: "hidden",
+    padding: "20px",
+    fontFamily: "'Poppins', sans-serif",
+  },
+  bgGradient: {
+    position: "absolute",
+    inset: 0,
+    background: "radial-gradient(ellipse at top, rgba(79, 70, 229, 0.3), transparent)",
+  },
+  bgBlob1: {
+    position: "absolute",
+    top: "-150px",
+    left: "-150px",
+    width: "400px",
+    height: "400px",
+    background: "rgba(59, 130, 246, 0.15)",
+    borderRadius: "50%",
+    filter: "blur(80px)",
+    animation: "pulse 4s ease-in-out infinite",
+  },
+  bgBlob2: {
+    position: "absolute",
+    bottom: "-150px",
+    right: "-150px",
+    width: "400px",
+    height: "400px",
+    background: "rgba(168, 85, 247, 0.15)",
+    borderRadius: "50%",
+    filter: "blur(80px)",
+    animation: "pulse 4s ease-in-out infinite 2s",
+  },
+  chatBox: {
+    position: "relative",
+    width: "100%",
+    maxWidth: "900px",
+    height: "85vh",
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    backdropFilter: "blur(20px)",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    borderRadius: "24px",
+    boxShadow: "0 0 50px rgba(79, 70, 229, 0.3)",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+  },
+  header: {
+    padding: "24px",
+    background: "linear-gradient(to right, rgba(79, 70, 229, 0.3), rgba(168, 85, 247, 0.2))",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
+  },
+  headerContent: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "12px",
+  },
+  avatar: {
+    width: "48px",
+    height: "48px",
+    background: "linear-gradient(135deg, #3b82f6, #4f46e5)",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "24px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+  },
+  title: {
+    fontSize: "28px",
+    fontWeight: "700",
+    background: "linear-gradient(to right, #60a5fa, #a78bfa, #f472b6)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    margin: 0,
+  },
+  subtitle: {
+    fontSize: "14px",
+    color: "#d1d5db",
+    margin: 0,
+  },
+  messagesArea: {
+    flex: 1,
+    overflowY: "auto",
+    padding: "24px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+  },
+  emptyState: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+    textAlign: "center",
+  },
+  emptyIcon: {
+    width: "96px",
+    height: "96px",
+    background: "linear-gradient(135deg, #3b82f6, #a855f7)",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "48px",
+    marginBottom: "16px",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+  },
+  emptyTitle: {
+    fontSize: "24px",
+    fontWeight: "600",
+    color: "#e5e7eb",
+    margin: "0 0 8px 0",
+  },
+  emptyText: {
+    fontSize: "14px",
+    color: "#9ca3af",
+    maxWidth: "400px",
+    margin: 0,
+  },
+  messageRow: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "12px",
+  },
+  botAvatar: {
+    width: "40px",
+    height: "40px",
+    background: "linear-gradient(135deg, #3b82f6, #4f46e5)",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "20px",
+    flexShrink: 0,
+    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+  },
+  userAvatar: {
+    width: "40px",
+    height: "40px",
+    background: "linear-gradient(135deg, #4b5563, #1f2937)",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "20px",
+    flexShrink: 0,
+    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+  },
+  messageBubble: {
+    maxWidth: "70%",
+    padding: "14px 18px",
+    borderRadius: "16px",
+    fontSize: "15px",
+    lineHeight: "1.6",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+    whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
+  },
+  userBubble: {
+    background: "linear-gradient(135deg, #2563eb, #4f46e5, #7c3aed)",
+    color: "white",
+    borderTopRightRadius: "4px",
+  },
+  botBubble: {
+    background: "rgba(255, 255, 255, 0.95)",
+    color: "#111827",
+    borderTopLeftRadius: "4px",
+    border: "1px solid rgba(229, 231, 235, 0.3)",
+  },
+  typingBubble: {
+    background: "rgba(255, 255, 255, 0.95)",
+    padding: "14px 18px",
+    borderRadius: "16px",
+    borderTopLeftRadius: "4px",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+  },
+  typingDots: {
+    display: "flex",
+    gap: "4px",
+  },
+  dot: {
+    fontSize: "24px",
+    color: "#4f46e5",
+    animation: "bounce 1.4s ease-in-out infinite",
+  },
+  typingText: {
+    fontSize: "13px",
+    color: "#6b7280",
+  },
+  inputArea: {
+    display: "flex",
+    alignItems: "flex-end",
+    gap: "12px",
+    padding: "24px",
+    background: "rgba(15, 23, 42, 0.8)",
+    backdropFilter: "blur(20px)",
+    borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+  },
+  textarea: {
+    flex: 1,
+    background: "rgba(30, 41, 59, 0.8)",
+    color: "white",
+    border: "1px solid rgba(75, 85, 99, 0.5)",
+    borderRadius: "16px",
+    padding: "16px",
+    fontSize: "15px",
+    fontFamily: "'Poppins', sans-serif",
+    resize: "none",
+    outline: "none",
+    minHeight: "60px",
+    maxHeight: "120px",
+    transition: "all 0.2s",
+  },
+};
+
+const buttonStyles = {
+  borderRadius: 3,
+  px: 4,
+  py: 1.5,
+  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  textTransform: "none",
+  fontSize: "1rem",
+  fontWeight: 600,
+  boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
+  "&:hover": {
+    background: "linear-gradient(135deg, #5568d3 0%, #63408a 100%)",
+    boxShadow: "0 6px 20px rgba(102, 126, 234, 0.6)",
+  },
+  "&:disabled": {
+    background: "linear-gradient(135deg, #4a5568 0%, #2d3748 100%)",
+    color: "#718096",
+  },
+};
