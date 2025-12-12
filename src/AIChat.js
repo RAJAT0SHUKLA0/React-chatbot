@@ -65,7 +65,7 @@ export default function AIChat() {
             </div>
             <div className="text-center">
               <h1 className="text-3xl font-bold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-                AI Chatbot
+                
               </h1>
               <p className="text-sm text-gray-300 mt-0.5">Your Smart Assistant</p>
             </div>
